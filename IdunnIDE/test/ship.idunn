@@ -1,0 +1,23 @@
+global.armada = createEntity(ship)
+
+global.other = createEntity(ship)
+global.other.name = "TestTruc"
+
+newship = createEntity(ship)
+newship.name = "Battlestar"
+
+//stock est un archetype qui a une clef “contains” qui est le type contenue
+//et un montant “amount”
+newcargo = createEntity(stock)
+newcargo.contains = “metal”
+newcargo.amount = 500
+pushValue(newship.cargo, newcargo)
+
+// grab le vaisseau serenity depuis l’armada 
+serenity = global.armada.ships[name:Serenity]
+//grab le crewman Wash et le retire de Serenity pour l’ajouter a newship
+washchar = serenity.crew[name:Wash]
+removeValue(serenity.crew, washchar)
+pushValue (newship.crew, washchar)
+
+pushValue (global.armada.ships, newship)
