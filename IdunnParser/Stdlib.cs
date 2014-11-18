@@ -12,7 +12,7 @@ namespace IdunnParser
         {
             if (parameters.Length > 1)
             {
-                P.LogError("Function createEntity have the too many parameters");
+                P.LogError("Function new have the too many parameters");
                 return null;
             }
 

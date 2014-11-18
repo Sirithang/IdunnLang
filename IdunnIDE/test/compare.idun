@@ -1,0 +1,3 @@
+global.armada.ships[name:pru]
+global.other.cargo[amount:500]
+global.other.cargo[amount:50]

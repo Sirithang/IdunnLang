@@ -1,0 +1,24 @@
+{
+	"archetypes":
+	{
+		"newArchetype_0":
+		{
+			"tit":
+			{
+			}
+			,
+			"blublu":
+			[
+			]
+		}
+		,
+		"newArchetype_1":
+		{
+			"test":"name",
+			"array":
+			[
+			]
+		}
+	}
+	
+}

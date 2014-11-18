@@ -1,0 +1,17 @@
+[
+{
+	"archetype" :"armada",
+	"ships" : []
+},
+{
+	"archetype":"ship",
+	"name":"",
+	"crew":[],
+	"cargo":[]
+},
+{
+	"archetype":"stock",
+	"contains":""
+	"amount":0
+}
+]

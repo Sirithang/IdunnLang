@@ -1,0 +1,26 @@
+{
+	"archetypes":
+	[
+		
+		{
+			"archetype":"bloblo"
+		}
+		,
+		
+		{
+			"archetype":"archetype_1"
+		}
+		,
+		
+		{
+			"archetype":"test"
+		}
+		,
+		
+		{
+			"archetype":"archetype_2"
+		}
+		
+	]
+	
+}
