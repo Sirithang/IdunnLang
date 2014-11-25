@@ -1,7 +1,7 @@
 ﻿<Window x:Class="IdunnIDE.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="784" Width="635">
+        Title="MainWindow" Height="1054" Width="635">
     <Grid>
         <Menu Height="23" Margin="0,-2,0,0" Name="menu1" VerticalAlignment="Top">
             <MenuItem Header="File">
@@ -46,15 +46,23 @@
                     <StackPanel Name="stackPanel1" Grid.Column="1" Grid.RowSpan="2" >
                             <StackPanel Name="stackPanel2" Orientation="Horizontal" VerticalAlignment="Stretch">
                                 <Label Content="Name" Height="28" Name="label1" />
-                                <TextBox Height="23" Name="textBox1" MinWidth="200" Width="350" />
+                                <TextBox Height="23" Name="eventNameBox" TextChanged="eventNameBox_TextChanged" Width="362" />
                             </StackPanel>
                             <StackPanel Name="stackPanel3" Orientation="Horizontal">
                                 <Label Content="Tags : " Name="label2" />
-                                <TextBox Height="23" Name="textBox2" Width="350" />
+                                <TextBox Height="23" Name="eventTagBox" Width="350" TextChanged="eventTagBox_TextChanged" />
+                            </StackPanel>
+                            <StackPanel Name="stackPanel13" Orientation="Horizontal">
+                                <Label Content="Valid : " Name="label12" />
+                                <TextBox Height="23" Name="eventValidText" Width="350" TextChanged="eventValidText_TextChanged" />
+                            </StackPanel>
+                            <StackPanel Name="stackPanel14" Orientation="Horizontal">
+                                <Label Content="Invalid : " Name="label13" />
+                                <TextBox Height="23" Name="eventInvalidText" Width="350" TextChanged="eventInvalidText_TextChanged" />
                             </StackPanel>
                             <StackPanel Name="stackPanel4">
                                 <Label Content="Text" Name="label3" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                <TextBox Name="textBox3" VerticalScrollBarVisibility="Visible" MinHeight="150" />
+                                <TextBox Name="textBox3" VerticalScrollBarVisibility="Visible" MinHeight="150" TextChanged="textBox3_TextChanged" AcceptsReturn="True" />
                             </StackPanel>
                             <StackPanel Name="stackPanel5" HorizontalAlignment="Stretch">
                                 <Label Content="Conditions" Height="28" Name="label4" HorizontalAlignment="Center" />
@@ -72,12 +80,12 @@
                                 Name="eventExec"
                                 SyntaxHighlighting="C#"
                                 FontFamily="Consolas"
-                                FontSize="10pt" TextChanged="eventConditionCodeEditor_TextChanged" MinHeight="150" />
+                                FontSize="10pt" MinHeight="150" TextChanged="eventExec_TextChanged" />
                             </StackPanel>
-                            <Button Content="Add Child" Height="23" Name="button3" Width="75" />
+                            <Button Content="Add Child" Height="23" Name="button3" Width="75" Click="button3_Click" />
                         </StackPanel>
                     </ScrollViewer>
-                    <TreeView Height="285" HorizontalAlignment="Left" Margin="6,6,0,0" Name="eventTreeView" VerticalAlignment="Top" Width="120" />
+                    <TreeView HorizontalAlignment="Left" Margin="6,6,0,0" Name="eventTreeView" VerticalAlignment="Stretch" Width="120" SelectedItemChanged="eventTreeView_SelectedItemChanged" />
                 </Grid>
             </TabItem>
         </TabControl>

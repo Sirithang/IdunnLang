@@ -119,6 +119,7 @@ namespace IdunnParser
 
             database = new JSONClass();
             database.Add("archetypes", new JSONArray());
+            database.Add("events", new JSONArray());
         }
 
         public void ReloadAllEvent()

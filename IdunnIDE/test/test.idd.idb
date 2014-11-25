@@ -1,26 +1,127 @@
 {
 	"archetypes":
 	[
-		
+		 
 		{
 			"archetype":"bloblo"
 		}
 		,
-		
+		 
 		{
 			"archetype":"archetype_1"
 		}
 		,
-		
+		 
 		{
-			"archetype":"test"
+			"archetype":"ship",
+			 "cargo":
+			[
+				 
+			]
+			,
+			 "crew":
+			[
+				 
+			]
+			,
+			 "weapon":
+			[
+				 
+			]
+			
 		}
 		,
-		
+		 
 		{
 			"archetype":"archetype_2"
 		}
-		
+		 
+	]
+	,
+	 "events":
+	[
+		 
+		{
+			"name":"MerchantEncounter",
+			 "text":"Hello%global.player.name%canIinterestyouinanymerchandise?",
+			 "childs":
+			[
+				 
+				{
+					"name":"Shop",
+					 "text":"Do you want to refuel or refill your weapon?",
+					 "childs":
+					[
+						 
+						{
+							"name":"Weapon",
+							 "text":"Ok there you go,
+							\t\t\t\t\t\t\t\t\t\t\t\t\t\thaveanicetime!",
+							 "condition":"global.player.gold>100",
+							 "exec":"global.player.gold=global.player.gold-100;\r\n\r\nrefillWeapons(global.player.ship.weapons);",
+							 "childs":
+							[
+								 
+							]
+							
+						}
+						,
+						 
+						{
+							"name":"Fuel",
+							 "text":"Thereyourtankisfull!haveaniceday!",
+							 "condition":"//samehereifwewanttomaketheamountrelativetofuelmissing?\r\n//maybeletrefuelShip()takecareofmoney:p\r\nglobal.player.gold>50",
+							 "exec":"//needlang.extensiontodynamicallydothat\r\n//accordingtofuelmissing?orrefuelTakecare?\r\nglobal.player.gold=global.player.gold-50\r\n\r\nrefuelShip(global.player.ship)",
+							 "childs":
+							[
+								 
+							]
+							
+						}
+						 
+					]
+					
+				}
+				,
+				 
+				{
+					"name":"NoShop",
+					 "text":"Have a nice day!",
+					 "valid":"No thanks!",
+					 "childs":
+					[
+						 
+					]
+					
+				}
+				 
+			]
+			,
+			 "tags":"SPACE"
+		}
+		,
+		 
+		{
+			"name":"event_1",
+			 "text":"ENTERTEXTHERE",
+			 "childs":
+			[
+				 
+			]
+			
+		}
+		,
+		 
+		{
+			"name":"event_2",
+			 "text":"ENTERTEXTHERE",
+			 "childs":
+			[
+				 
+			]
+			
+		}
+		 
 	]
 	
 }

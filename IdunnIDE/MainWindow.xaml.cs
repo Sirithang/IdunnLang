@@ -38,6 +38,7 @@ namespace IdunnIDE
         }
 
 
+
         public void RefereshArchetypes()
         {
             int deleteFrom = -1;
@@ -108,8 +109,10 @@ namespace IdunnIDE
         }
 
 
+        protected JSONClass _currentSelected = null;
         public void RefreshEventList()
         {
+            selectInhibited = true;
             this.eventTreeView.Items.Clear();
 
             for (int i = this.eventTreeView.Items.Count; i < parser.database["events"].Count; ++i)
@@ -117,41 +120,68 @@ namespace IdunnIDE
                 JSONClass c = parser.database["events"][i].AsObject;
 
                 TreeViewItem viewItem = new TreeViewItem();
-                RecursiveChildAdd(viewItem, c);
-
                 this.eventTreeView.Items.Add(viewItem);
+
+                if (RecursiveChildAdd(viewItem, c))
+                {
+                    viewItem.ExpandSubtree();
+                }
             }
         }
 
-        protected void RecursiveChildAdd(TreeViewItem parent, JSONClass c)
+        protected bool RecursiveChildAdd(TreeViewItem parent, JSONClass c)
         {
-            parent.Header = c["name"];
+            bool needExpansion = false;
+
+            parent.Header = c["name"].Value;
+            parent.Tag = c;
+
+            if (c == _currentSelected)
+            {
+                needExpansion = true;
+                parent.IsSelected = true;
+            }
 
             foreach (JSONClass child in c["childs"].AsArray)
             {
                 TreeViewItem item = new TreeViewItem();
 
-                RecursiveChildAdd(item, child);
+                needExpansion |= RecursiveChildAdd(item, child);
+
+                parent.Items.Add(item);
             }
+
+            return needExpansion;
         }
 
-        public void AddNewEvent()
+        public JSONClass AddNewEvent(JSONClass parent = null)
         {
             if (parser.database == null)
-                return;
+                return null;
 
             string name = "event_";
             int freeIdx = -1;
             bool isFree = false;
+
+            JSONArray target;
+
+            if (parent != null)
+            {
+                target = parent["childs"].AsArray;
+            }
+            else
+            {
+                target = parser.database["events"].AsArray;
+            }
 
             while (!isFree)
             {
                 isFree = true;
                 freeIdx += 1;
 
-                for (int i = 0; i < parser.database["events"].Count; ++i)
+                for (int i = 0; i < target.Count; ++i)
                 {
-                    if (parser.database["events"][i]["name"].Value == name + freeIdx)
+                    if (target[i]["name"].Value == name + freeIdx)
                     {
                         isFree = false;
                         break;
@@ -164,11 +194,15 @@ namespace IdunnIDE
             c.Add("text", "ENTER TEXT HERE");
             c.Add("condition", "");
             c.Add("exec", "");
+            c.Add("invalid", "");
+            c.Add("valid", "");
             c.Add("childs", new JSONArray());
 
-            parser.database["events"].Add(c);
+            target.Add(c);
 
             RefreshEventList();
+
+            return c;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -222,6 +256,7 @@ namespace IdunnIDE
                         parser.database = res;
                         databaseFile = dlg.FileName;
                         RefereshArchetypes();
+                        RefreshEventList();
                     }
                 }
                 catch (System.Exception ex)
@@ -277,7 +312,167 @@ namespace IdunnIDE
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-            AddNewEvent();    
+            AddNewEvent();
+        }
+
+        private void button3_Click(object sender, RoutedEventArgs e)
+        {
+            if (eventTreeView.SelectedItem == null)
+                return;
+
+            TreeViewItem item = eventTreeView.SelectedItem as TreeViewItem;
+
+            JSONClass c = item.Tag as JSONClass;
+
+            AddNewEvent(c);
+        }
+
+
+        //-------------------
+
+        private void eventExec_TextChanged(object sender, EventArgs e)
+        {
+            if (eventTreeView.SelectedItem == null)
+                return;
+
+            TreeViewItem item = eventTreeView.SelectedItem as TreeViewItem;
+
+            JSONClass c = item.Tag as JSONClass;
+
+            c["exec"] = this.eventExec.Text;
+
+            //UpdateData(item);
+        }
+
+        private void eventConditionCodeEditor_TextChanged(object sender, EventArgs e)
+        {
+            if (eventTreeView.SelectedItem == null)
+                return;
+
+            TreeViewItem item = eventTreeView.SelectedItem as TreeViewItem;
+
+            JSONClass c = item.Tag as JSONClass;
+
+            c["condition"] = this.eventCondition.Text;
+            //UpdateData(item);
+
+        }
+
+        private void textBox3_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (eventTreeView.SelectedItem == null)
+                return;
+
+            TreeViewItem item = eventTreeView.SelectedItem as TreeViewItem;
+
+            JSONClass c = item.Tag as JSONClass;
+
+            c["text"] = this.textBox3.Text;
+
+            //UpdateData(item);
+        }
+
+        protected bool selectInhibited = false;
+
+        private void eventTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (selectInhibited)
+            {
+                selectInhibited = false;
+                return;
+            }
+            TreeViewItem item = (TreeViewItem)e.NewValue;
+
+            if (item != null && item.Tag == _currentSelected)
+                return;
+
+            UpdateData(item);
+        }
+
+        protected void UpdateData(TreeViewItem item)
+        {
+            if (item != null && item.Tag != null)
+            {
+                JSONClass c = item.Tag as JSONClass;
+                _currentSelected = c;
+
+                this.eventValidText.Text = c["valid"].Value;
+                this.eventInvalidText.Text = c["invalid"].Value;
+
+                this.eventExec.Text = c["exec"].Value;
+                this.eventCondition.Text = c["condition"].Value;
+                this.textBox3.Text = c["text"].Value;
+
+                this.eventNameBox.Text = c["name"].Value;
+                this.eventTagBox.Text = c["tags"].Value;
+            }
+            else
+            {
+                this.eventValidText.Text = "";
+                this.eventInvalidText.Text = "";
+
+                this.eventExec.Text = "";
+                this.eventCondition.Text = "";
+                this.textBox3.Text = "";
+
+                this.eventNameBox.Text = "";
+                this.eventTagBox.Text = "";
+
+                _currentSelected = null;
+            }
+        }
+
+        private void eventNameBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (eventTreeView.SelectedItem == null)
+                return;
+
+            TreeViewItem item = eventTreeView.SelectedItem as TreeViewItem;
+
+            JSONClass c = item.Tag as JSONClass;
+
+            c["name"] = this.eventNameBox.Text;
+
+            if(c["name"].Value != item.Header)
+                RefreshEventList();
+        }
+
+        private void eventTagBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (eventTreeView.SelectedItem == null)
+                return;
+
+            TreeViewItem item = eventTreeView.SelectedItem as TreeViewItem;
+
+            JSONClass c = item.Tag as JSONClass;
+
+            c["tags"] = this.eventTagBox.Text;
+
+            //UpdateData(item);
+        }
+
+        private void eventValidText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (eventTreeView.SelectedItem == null)
+                return;
+
+            TreeViewItem item = eventTreeView.SelectedItem as TreeViewItem;
+
+            JSONClass c = item.Tag as JSONClass;
+
+            c["valid"].Value = this.eventValidText.Text;
+        }
+
+        private void eventInvalidText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (eventTreeView.SelectedItem == null)
+                return;
+
+            TreeViewItem item = eventTreeView.SelectedItem as TreeViewItem;
+
+            JSONClass c = item.Tag as JSONClass;
+
+            c["invalid"].Value = this.eventInvalidText.Text;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace IdunnParser
     {
         static public string CleanOfWhitespace(string line)
         {
-            return System.Text.RegularExpressions.Regex.Replace(line, @"\s+", "");
+            return System.Text.RegularExpressions.Regex.Replace(line, @"\s+", " ");
         }
 
         /// <summary>
